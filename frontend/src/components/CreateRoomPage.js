@@ -1,24 +1,19 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import { Button, Grid, Typography, TextField, FormHelperText, FormControl, Radio, RadioGroup, FormControlLabel } from '@material-ui/core';
+
 
 export default class CreateRoomPage extends Component {
     defaultVotes = 2;
-
+    
     constructor(props) {
         super(props);
         this.state = {
             guestCanPause: true,
             votesToSkip: this.defaultVotes,
+            redirect: null,
         };
 
         this.handleRoomButtonPressed = this.handleRoomButtonPressed.bind(this);
@@ -40,19 +35,25 @@ export default class CreateRoomPage extends Component {
 
     handleRoomButtonPressed() {
         const requestOptions = {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                votes_to_skip: this.state.votesToSkip,
-                guest_can_pause: this.state.guestCanPause,
-            }),
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            votes_to_skip: this.state.votesToSkip,
+            guest_can_pause: this.state.guestCanPause,
+          }),
         };
         fetch("/api/create-room", requestOptions)
-            .then((response) => response.json())
-            .then((data) => console.log(data));
-    }
+          .then((response) => response.json())
+          .then((data) => {
+            this.setState({ redirect: `/room/${data.code}` });
+          });         
+      }
 
     render() {
+        if (this.state.redirect) {
+            return <Navigate to={this.state.redirect} />;
+        }
+        
         return (
             <Grid container spacing={1}>
                 <Grid item xs={12} align="center">
