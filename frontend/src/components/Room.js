@@ -1,5 +1,7 @@
 import React, { Component } from "react";
-import { Link, useParams, withRouter } from 'react-router-dom';
+import { Link, useParams, withRouter, Navigate } from 'react-router-dom';
+
+import { Grid , Button, Typography } from '@material-ui/core';
 
 const withParams = Component => props => {
   const params = useParams();
@@ -14,9 +16,11 @@ class Room extends Component {
       votesToSkip: 2,
       guestCanPause: false,
       isHost: false,
+      redirect: null,
     };
     this.roomCode = this.props.params.roomCode;
     this.getRoomDetails();
+    this.leaveButtonPressed = this.leaveButtonPressed.bind(this);
   }
 
   getRoomDetails() {
@@ -31,14 +35,56 @@ class Room extends Component {
       });
   }
 
+  leaveButtonPressed() {
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    };
+    fetch('/api/leave-room', requestOptions)
+      .then((response) => {
+        this.setState({ redirect: '/' });
+      });
+  }
+
   render() {
+    if (this.state.redirect) {
+      return <Navigate to={this.state.redirect} />;
+    }
+
     return (
-      <div>
-        <h3>Room Code: {this.roomCode}</h3>
-        <p>Votes: {this.state.votesToSkip}</p>
-        <p>Guest Can Pause: {this.state.guestCanPause.toString()}</p>
-        <p>Host: {this.state.isHost.toString()}</p>
-      </div>
+      <Grid container spacing={1}>
+          <Grid item xs={12} align="center">
+            <Typography variant="h4" component="h4">
+              Code: {this.roomCode}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} align="center">
+            <Typography variant="h6" component="h6">
+              Votes: {this.state.votesToSkip}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} align="center">
+            <Typography variant="h6" component="h6">
+                Guest Can Pause: {this.state.guestCanPause.toString()}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} align="center">
+            <Typography variant="h6" component="h6">
+                Host: {this.state.isHost.toString()}
+              </Typography>
+          </Grid>
+          <Grid item xs={12} align="center">
+            <Button 
+              variant="contained" 
+              color="secondary" 
+              onClick={this.leaveButtonPressed}
+            >
+              Leave Room
+            </Button>
+          </Grid>
+      </Grid>
+
+     
     );
   }
 }

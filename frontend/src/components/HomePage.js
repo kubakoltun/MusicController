@@ -52,16 +52,13 @@ class HomePage extends Component {
         return (
             <BrowserRouter>
                <Routes>
-                    {/* render() method is not used in react18 i have to replace it with sometohng up to date
-                        i need to replace it with createRoot() method but dont know how yet     
-                    */}
                     <Route exact path="/" element={
                         this.state.roomCode ? (<Navigate to={`/room/${this.state.roomCode}`} />) : this.renderHomePage()
                     } />
-                        {/* <Route index element={this.renderHomePage()} /> */}
                     <Route path="/join" element={<RoomJoinPage />} />
                     <Route path="/create" element={<CreateRoomPage />} />
                     <Route path="/room/:roomCode" element={<Room />} /> 
+                    {/* i need to get the roomCode and check if its a existing room if not go to homepage */}
                 </Routes>
           </BrowserRouter>
         );
