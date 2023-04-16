@@ -25,7 +25,13 @@ class Room extends Component {
 
   getRoomDetails() {
     fetch('/api/get-room' + '?code=' + this.roomCode)
-      .then((response) => response.json())
+      .then((response) => {
+        if(!response.ok) {
+          this.props.leaveRoomCallback();
+          this.setState({ redirect: '/' });
+        }
+        return response.json() 
+      })
       .then((data) => {
         this.setState({
           votesToSkip: data.votes_to_skip,
@@ -42,6 +48,7 @@ class Room extends Component {
     };
     fetch('/api/leave-room', requestOptions)
       .then((response) => {
+        this.props.leaveRoomCallback();
         this.setState({ redirect: '/' });
       });
   }

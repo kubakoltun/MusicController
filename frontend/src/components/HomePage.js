@@ -13,7 +13,8 @@ class HomePage extends Component {
         super(props);
         this.state = {
             roomCode: null,
-        }
+        };
+        this.clearRoomCode = this.clearRoomCode.bind(this);
     }
 
     async componentDidMount() {
@@ -48,6 +49,12 @@ class HomePage extends Component {
         );
     }
 
+    clearRoomCode() {
+        this.setState({
+            roomCode: null,
+        });
+    }
+
     render() {
         return (
             <BrowserRouter>
@@ -57,8 +64,12 @@ class HomePage extends Component {
                     } />
                     <Route path="/join" element={<RoomJoinPage />} />
                     <Route path="/create" element={<CreateRoomPage />} />
-                    <Route path="/room/:roomCode" element={<Room />} /> 
-                    {/* i need to get the roomCode and check if its a existing room if not go to homepage */}
+                    <Route 
+                        path="/room/:roomCode" 
+                        element={
+                            <Room leaveRoomCallback={this.clearRoomCode} />
+                        }
+                    /> 
                 </Routes>
           </BrowserRouter>
         );
