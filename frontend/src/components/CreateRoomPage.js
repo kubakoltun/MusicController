@@ -198,7 +198,9 @@ export default class CreateRoomPage extends Component {
                             </FormHelperText>
                         </FormControl>
                     </Grid>
-                    {this.props.update ? this.renderUpdateButtons() : this.renderCreateButtons()}
+                    {this.props.update
+                     ? this.renderUpdateButtons() 
+                     : this.renderCreateButtons()}
             </Grid>
         );
     }

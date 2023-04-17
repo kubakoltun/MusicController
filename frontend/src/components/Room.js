@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Link, useParams, withRouter, Navigate } from 'react-router-dom';
 
 import CreateRoomPage from "./CreateRoomPage";
+import MusicPlayer from "./MusicPlayer";
 
 import { Grid , Button, Typography } from '@material-ui/core';
 
@@ -21,6 +22,7 @@ class Room extends Component {
       redirect: null,
       showSettings: false,
       spotifyAuthenticated: false,
+      song: {}
     };
     this.roomCode = this.props.params.roomCode;
     this.leaveButtonPressed = this.leaveButtonPressed.bind(this);
@@ -29,7 +31,16 @@ class Room extends Component {
     this.renderSettings = this.renderSettings.bind(this);
     this.getRoomDetails = this.getRoomDetails.bind(this);
     this.authenticateSpotify = this.authenticateSpotify.bind(this);
+    this.getCurrentSong = this.getCurrentSong.bind(this);
     this.getRoomDetails();
+  }
+
+  componentDidMount() {
+    this.interval = setInterval(this.getCurrentSong, 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
   }
 
   getRoomDetails() {
@@ -65,6 +76,21 @@ class Room extends Component {
                 window.location.replace(data.url);
             });
         }
+      });
+  }
+
+  getCurrentSong() {
+    fetch("/spotify/current-song")
+      .then((response) => {
+        if (!response.ok) {
+          return {};
+        } else {
+          return response.json();
+        }
+      })
+      .then((data) => {
+        this.setState({ song: data });
+        console.log(data);
       });
   }
 
@@ -141,21 +167,7 @@ class Room extends Component {
               Code: {this.roomCode}
             </Typography>
           </Grid>
-          <Grid item xs={12} align="center">
-            <Typography variant="h6" component="h6">
-              Votes: {this.state.votesToSkip}
-            </Typography>
-          </Grid>
-          <Grid item xs={12} align="center">
-            <Typography variant="h6" component="h6">
-                Guest Can Pause: {this.state.guestCanPause.toString()}
-            </Typography>
-          </Grid>
-          <Grid item xs={12} align="center">
-            <Typography variant="h6" component="h6">
-                Host: {this.state.isHost.toString()}
-              </Typography>
-          </Grid>
+          <MusicPlayer {...this.state.song} />
           {this.state.isHost ? this.renderSettingsButton() : null}
           <Grid item xs={12} align="center">
             <Button 
@@ -174,3 +186,20 @@ class Room extends Component {
 }
 
 export default withParams(Room);
+
+
+// <Grid item xs={12} align="center">
+// <Typography variant="h6" component="h6">
+//   Votes: {this.state.votesToSkip}
+// </Typography>
+// </Grid>
+// <Grid item xs={12} align="center">
+// <Typography variant="h6" component="h6">
+//     Guest Can Pause: {this.state.guestCanPause.toString()}
+// </Typography>
+// </Grid>
+// <Grid item xs={12} align="center">
+// <Typography variant="h6" component="h6">
+//     Host: {this.state.isHost.toString()}
+//   </Typography>
+// </Grid>
