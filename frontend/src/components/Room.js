@@ -24,6 +24,7 @@ class Room extends Component {
       spotifyAuthenticated: false,
       song: {}
     };
+    
     this.roomCode = this.props.params.roomCode;
     this.leaveButtonPressed = this.leaveButtonPressed.bind(this);
     this.updateShowSettings = this.updateShowSettings.bind(this);
@@ -186,20 +187,3 @@ class Room extends Component {
 }
 
 export default withParams(Room);
-
-
-// <Grid item xs={12} align="center">
-// <Typography variant="h6" component="h6">
-//   Votes: {this.state.votesToSkip}
-// </Typography>
-// </Grid>
-// <Grid item xs={12} align="center">
-// <Typography variant="h6" component="h6">
-//     Guest Can Pause: {this.state.guestCanPause.toString()}
-// </Typography>
-// </Grid>
-// <Grid item xs={12} align="center">
-// <Typography variant="h6" component="h6">
-//     Host: {this.state.isHost.toString()}
-//   </Typography>
-// </Grid>
